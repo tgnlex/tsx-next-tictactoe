@@ -1,4 +1,5 @@
-import Board from '../containers/Board';      
+import Board from '../containers/Board';
+import '../styles/globals.css'      
 export default function Home() {
  
 

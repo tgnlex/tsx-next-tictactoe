@@ -1,7 +1,6 @@
-import Marker from './Marker'
 type Player = {
   name: string | void;
-  marker: Marker;
+  marker: CurrentPlayer;
 }
 
 export default Player;

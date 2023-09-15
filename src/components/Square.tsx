@@ -1,14 +1,15 @@
+import Square from '@/types/props/SquareProps';
 import {useState} from 'react'
-import Players, {PlayerOne, PlayerTwo} from './PlayerCard'
-import Marker  from '@/types/Marker'
-import Player from '@/types/Player'
-function Square({}) { 
+
+function Square({value, onClick, winner}: Square) { 
   
-  return (
-    <div className="square">
-      
-    </div>
-  )
+ if(!value){ 
+  return <button disabled={Boolean(winner)} onClick={onClick} className="square square-off">#</button>
+ } else {
+  return <button disabled className={`square square-on square_${value.toLocaleLowerCase}"`}>
+    {value}
+  </button>
+ }
 }
 
 

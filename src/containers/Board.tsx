@@ -1,53 +1,96 @@
-import CurrentPlayer from '@/components/CurrentPlayer'
+// Import react hooks
+import { useState, useEffect } from 'react';
+// components
+import Current from '@/components/Current';
+import Square from '@/components/Square';
+// data models
+import PlayerOne from '@/models/PlayerOne';
+import PlayerTwo from '@/models/PlayerTwo';
+// types
+import CurrentPlayer from '@/types/CurrentPlayer';
+import Player from '@/types/Player';
 
-import Square from '@/components/Square'
-import PlayerOne from '@/models/PlayerOne'
-import PlayerTwo from '@/models/PlayerTwo'
-import Marker from '@/types/Marker'
-import Player from '@/types/Player'
-import { useState } from 'react'
-
+function calculateWinner(squares: Player[]) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8], 
+    [0, 3, 6],
+    [1, 4, 7], 
+    [2, 5, 8], 
+    [0, 4, 8], 
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
+}
 function Board() {
-  const [squares, setSquares] = useState(null)
-  const [currentPlayer, setCurrentPlayer] = useState<Player>()
+  const [squares, setSquares] = useState(Array(9).fill(null))
+  const [player, setPlayer] = useState<Player>()
   const [winner, setWinner] = useState<any>()
-  const [currentMarker, setCurrentMarker] = useState<Marker>(
+  const [currentPlayer, setCurrentPlayer] = useState<CurrentPlayer>(
     Math.round(Math.random() * 1) === 1 ? PlayerOne.marker : PlayerTwo.marker
   )
   
-    if (currentMarker === PlayerOne.marker) {
-      setCurrentPlayer(PlayerOne)
+
+  //tethersPlayer state to current marker state
+  if (currentPlayer === PlayerOne.marker) {
+      setPlayer(PlayerOne)
     } else {
-      if (currentMarker === PlayerTwo.marker){
-         setCurrentPlayer(PlayerTwo)
+      if (currentPlayer === PlayerTwo.marker){
+         setPlayer(PlayerTwo)
       } else {
           console.log('Error: no current Player set.')
       }
     }
   
-
-  function setSquareValue(index) { 
+  function reset(){
+    setSquares(Array(9).fill(null))
+    setWinner(null);
+    setCurrentPlayer(Math.round(Math.random() * 1) === 1 ? "X" : "O")
+  }
+  function setSquareValue(index: number) { 
     const newData = squares.map((val, i) => {
       if (i === index) {
-        return currentMarker;
+        return currentPlayer;
       }
       return val;
     });
     setSquares(newData)
-    setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X')
+    setCurrentPlayer(currentPlayer === "X" ? "O" : "X" )
   }
-
+  
+  useEffect(() => {
+    const w = calculateWinner(squares);
+    if (w) {
+      setWinner(w);
+    }
+    if (!w && !squares.filter((square) => !square).length) {
+      setWinner("BOTH");
+    }
+  });
   return (
     <div className="container">
-      <div className="board-head">
-      <CurrentPlayer currentPlayer={currentPlayer} />
+      <div className="board-header">
+      <Current player={currentPlayer} winner={''} />
+      {winner && winner !== "BOTH" && <p>Congratulations {winner}</p>}
+      {winner && winner === "BOTH" && (
+        <p>Congrats you both win!</p>
+      )}
       </div>
-      <div className="board-main">
-      {Array(9).fill(null).map((_, i) => {
+      <div className="grid board main">
+      {Array(9)
+      .fill(null)
+      .map((_, i) => {
         return <Square
           winner={winner}
           key={i}
-          onClick={() => }
+          onClick={() => setSquareValue(i)}
           value={squares[i]}
         />
       })}

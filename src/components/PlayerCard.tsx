@@ -1,24 +1,18 @@
 import React from 'react'
-import Player, {Marker} from '../types/Player'
-export const PlayerOne: Player = {
-    name: 'player 1',
-    marker: 'X',
-}
+import PlayerOne from '@/models/PlayerOne'
+import PlayerTwo from '@/models/PlayerTwo'
 
-export const PlayerTwo: Player = {
-      name: 'player 2',
-      marker: 'Y'
-  } 
-function Players() {
+
+
+function PlayerCard() {
   return (
-    
-    <div className="Title-Card">
+    <div className="Player-Card">
       {typeof PlayerOne.name === 'string' && 
        typeof PlayerTwo.name === 'string' ?
         <>
-          <div>{PlayerOne.name}</div>
+          <div className="text player player-one">{PlayerOne.name}</div>
           <p>vs.</p>
-          <div>{PlayerTwo.name}</div> 
+          <div className="text player player-two">{PlayerTwo.name}</div> 
         </> :
           <p>No Players Found</p>} 
      
@@ -27,4 +21,4 @@ function Players() {
   )
 }
 
-export default Players
+export default PlayerCard;
